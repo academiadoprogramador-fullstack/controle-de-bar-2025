@@ -42,8 +42,11 @@
     <main class="container my-4">
         @RenderBody()
     </main>
-
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.js"></script>
     <script src="~/lib/bootstrap-5.3.6-dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/ativacaoNavbar.js"></script>
+
+    @RenderSection("Scripts", required: false);
 </body>
 </html>

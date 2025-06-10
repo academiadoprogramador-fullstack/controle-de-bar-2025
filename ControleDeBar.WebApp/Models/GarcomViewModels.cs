@@ -1,11 +1,17 @@
 ﻿using ControleDeBar.Dominio.ModuloGarcom;
 using ControleDeBar.WebApp.Extensions;
+using System.ComponentModel.DataAnnotations;
 
 namespace ControleDeBar.WebApp.Models;
 
 public abstract class FormularioGarcomViewModel
 {
+    [Required(ErrorMessage = "O campo \"Nome\" é obrigatório.")]
     public string Nome { get; set; }
+
+    [Required(ErrorMessage = "O campo \"CPF\" é obrigatório!")]
+    [RegularExpression(@"^\d{3}\.\d{3}\.\d{3}-\d{2}$", 
+        ErrorMessage = "O campo \"CPF\" precisa seguir o formato: 000.000.000-00.")]
     public string Cpf { get; set; }
 }
 

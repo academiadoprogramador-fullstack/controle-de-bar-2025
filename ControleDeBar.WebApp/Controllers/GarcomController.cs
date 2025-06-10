@@ -39,8 +39,22 @@ public class GarcomController : Controller
     }
 
     [HttpPost("cadastrar")]
-    public ActionResult Cadastrar(CadastrarGarcomViewModel cadastrarVM)
+    public IActionResult Cadastrar(CadastrarGarcomViewModel cadastrarVM)
     {
+        var registros = repositorioGarcom.SelecionarRegistros();
+
+        foreach (var item in registros)
+        {
+            if (cadastrarVM.Cpf == item.Cpf)
+            {
+                ModelState.AddModelError("CadastroUnico", "Um garçom com este CPF já existe!");
+                break;
+            }
+        }
+
+        if (!ModelState.IsValid)
+            return View(cadastrarVM);
+
         var entidade = cadastrarVM.ParaEntidade();
 
         repositorioGarcom.CadastrarRegistro(entidade);
@@ -49,7 +63,7 @@ public class GarcomController : Controller
     }
 
     [HttpGet("editar/{id:guid}")]
-    public ActionResult Editar(Guid id)
+    public IActionResult Editar(Guid id)
     {
         var registroSelecionado = repositorioGarcom.SelecionarRegistroPorId(id);
 
@@ -63,8 +77,22 @@ public class GarcomController : Controller
     }
 
     [HttpPost("editar/{id:guid}")]
-    public ActionResult Editar(Guid id, EditarGarcomViewModel editarVM)
+    public IActionResult Editar(Guid id, EditarGarcomViewModel editarVM)
     {
+        var registros = repositorioGarcom.SelecionarRegistros();
+
+        foreach (var item in registros)
+        {
+            if (item.Id != id && item.Cpf == editarVM.Cpf)
+            {
+                ModelState.AddModelError("CadastroUnico", "Um garçom com este CPF já existe!");
+                break;
+            }
+        }
+
+        if (!ModelState.IsValid)
+            return View(editarVM);
+
         var entidadeEditada = editarVM.ParaEntidade();
 
         repositorioGarcom.EditarRegistro(id, entidadeEditada);
@@ -73,7 +101,7 @@ public class GarcomController : Controller
     }
 
     [HttpGet("excluir/{id:guid}")]
-    public ActionResult Excluir(Guid id)
+    public IActionResult Excluir(Guid id)
     {
         var registroSelecionado = repositorioGarcom.SelecionarRegistroPorId(id);
 
@@ -83,7 +111,7 @@ public class GarcomController : Controller
     }
 
     [HttpPost("excluir/{id:guid}")]
-    public ActionResult ExcluirConfirmado(Guid id)
+    public IActionResult ExcluirConfirmado(Guid id)
     {
         repositorioGarcom.ExcluirRegistro(id);
 
@@ -91,7 +119,7 @@ public class GarcomController : Controller
     }
 
     [HttpGet("detalhes/{id:guid}")]
-    public ActionResult Detalhes(Guid id)
+    public IActionResult Detalhes(Guid id)
     {
         var registroSelecionado = repositorioGarcom.SelecionarRegistroPorId(id);
 

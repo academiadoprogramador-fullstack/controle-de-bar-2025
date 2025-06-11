@@ -99,7 +99,7 @@ public class ContaController : Controller
 
         registroSelecionado.Fechar();
 
-        repositorioConta.Atualizar();
+        contextoDados.Salvar();
 
         return RedirectToAction(nameof(Index));
     }

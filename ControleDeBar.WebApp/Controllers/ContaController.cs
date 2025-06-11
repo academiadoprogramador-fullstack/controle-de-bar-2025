@@ -28,9 +28,16 @@ public class ContaController : Controller
     }
 
     [HttpGet]
-    public IActionResult Index()
+    public IActionResult Index([FromQuery]string? status = null)
     {
-        var registros = repositorioConta.SelecionarContas();
+        List<Conta> registros;
+
+        switch (status?.ToLower())
+        {
+            case "abertas": registros = repositorioConta.SelecionarContasAbertas(); break;
+            case "fechadas": registros = repositorioConta.SelecionarContasFechadas(); break;
+            default: registros = repositorioConta.SelecionarContas(); break;
+        }
 
         var visualizarVM = new VisualizarContasViewModel(registros);
 

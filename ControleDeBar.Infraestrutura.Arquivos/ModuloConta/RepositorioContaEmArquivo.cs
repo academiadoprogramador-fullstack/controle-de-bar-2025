@@ -21,11 +21,6 @@ public class RepositorioContaEmArquivo : IRepositorioConta
         contexto.Salvar();
     }
 
-    public List<Conta> SelecionarContas()
-    {
-        return registros;
-    }
-
     public Conta SelecionarPorId(Guid idRegistro)
     {
         foreach (var item in registros)
@@ -35,5 +30,37 @@ public class RepositorioContaEmArquivo : IRepositorioConta
         }
 
         return null;
+    }
+
+
+    public List<Conta> SelecionarContas()
+    {
+        return registros;
+    }
+
+    public List<Conta> SelecionarContasAbertas()
+    {
+        var contasAbertas = new List<Conta>();
+
+        foreach (var item in registros)
+        {
+            if (item.EstaAberta)
+                contasAbertas.Add(item);
+        }
+
+        return contasAbertas;
+    }
+
+    public List<Conta> SelecionarContasFechadas()
+    {
+        var contasFechadas = new List<Conta>();
+
+        foreach (var item in registros)
+        {
+            if (!item.EstaAberta)
+                contasFechadas.Add(item);
+        }
+
+        return contasFechadas;
     }
 }

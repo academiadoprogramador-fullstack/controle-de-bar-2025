@@ -18,6 +18,11 @@ public class RepositorioContaEmArquivo : IRepositorioConta
     {
         registros.Add(novaConta);
 
+        Atualizar();
+    }
+
+    public void Atualizar()
+    {
         contexto.Salvar();
     }
 

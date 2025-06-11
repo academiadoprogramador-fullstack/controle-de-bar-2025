@@ -127,7 +127,8 @@ public class MesaController : Controller
         var detalhesVM = new DetalhesMesaViewModel(
             id,
             registroSelecionado.Numero,
-            registroSelecionado.Capacidade
+            registroSelecionado.Capacidade,
+            registroSelecionado.EstaOcupada
         );
 
         return View(detalhesVM);

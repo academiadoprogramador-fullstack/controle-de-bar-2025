@@ -76,12 +76,14 @@ public class DetalhesMesaViewModel
     public Guid Id { get; set; }
     public int Numero { get; set; }
     public int Capacidade { get; set; }
+    public string Status { get; set; }
 
-    public DetalhesMesaViewModel(Guid id, int numero, int capacidade)
+    public DetalhesMesaViewModel(Guid id, int numero, int capacidade, bool estaOcupada)
     {
         Id = id;
         Numero = numero;
         Capacidade = numero;
+        Status = estaOcupada ? "Ocupada" : "Disponível";
     }
 }
 

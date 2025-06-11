@@ -46,6 +46,23 @@ public class AbrirContaViewModel
     }
 }
 
+public class FecharContaViewModel
+{
+    public Guid Id { get; set; }
+    public string Titular { get; set; }
+    public int Mesa { get; set; }
+    public string Garcom { get; set; }
+
+    public FecharContaViewModel(Guid id, string titular, int mesa, string garcom)
+    {
+        Id = id;
+        Titular = titular;
+        Mesa = mesa;
+        Garcom = garcom;
+    }
+}
+
+
 public class VisualizarContasViewModel
 {
     public List<DetalhesContaViewModel> Registros { get; set; }
@@ -65,12 +82,14 @@ public class DetalhesContaViewModel
     public string Titular { get; set; }
     public int Mesa { get; set; }
     public string Garcom { get; set; }
+    public bool EstaAberta { get; set; }
 
-    public DetalhesContaViewModel(Guid id, string titular, int mesa, string garcom)
+    public DetalhesContaViewModel(Guid id, string titular, int mesa, string garcom, bool estaAberta)
     {
         Id = id;
         Titular = titular;
         Mesa = mesa;
         Garcom = garcom;
+        EstaAberta = estaAberta;
     }
 }

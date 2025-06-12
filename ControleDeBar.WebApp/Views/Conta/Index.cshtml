@@ -44,10 +44,10 @@
                     @if (item.EstaAberta)
                     {
                         <span class="d-flex gap-1 justify-content-end mt-4">
-                            <a title="Gerenciar pedidos" href="/contas/@item.Id/gerenciar-pedidos" class="btn btn-primary rounded-circle opcao-card">
+                            <a title="Gerenciar pedidos" asp-action="GerenciarPedidos" asp-route-id="@item.Id" class="btn btn-primary rounded-circle opcao-card">
                                 <i class="bi bi-cart"></i>
                             </a>
-                            <a title="Fechar conta" href="/contas/@item.Id/fechar" class="btn btn-success rounded-circle opcao-card">
+                            <a title="Fechar conta" asp-action="Fechar" asp-route-id="@item.Id" class="btn btn-success rounded-circle opcao-card">
                                 <i class="bi bi-cash-coin"></i>
                             </a>
                         </span>

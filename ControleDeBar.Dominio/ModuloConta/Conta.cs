@@ -1,6 +1,7 @@
 ﻿using ControleDeBar.Dominio.Compartilhado;
 using ControleDeBar.Dominio.ModuloGarcom;
 using ControleDeBar.Dominio.ModuloMesa;
+using ControleDeBar.Dominio.ModuloProduto;
 
 namespace ControleDeBar.Dominio.ModuloConta;
 
@@ -12,8 +13,12 @@ public class Conta : EntidadeBase<Conta>
     public DateTime Abertura { get; set; }
     public DateTime Fechamento { get; set; }
     public bool EstaAberta { get; set; }
+    public List<Pedido> Pedidos { get; set; }
 
-    public Conta() { }
+    public Conta()
+    {
+        Pedidos = new List<Pedido>();
+    }
 
     public Conta(string titular, Mesa mesa, Garcom garcom) : this()
     {
@@ -39,6 +44,43 @@ public class Conta : EntidadeBase<Conta>
         Fechamento = DateTime.Now;
 
         Mesa.Desocupar();
+    }
+
+    public Pedido RegistrarPedido(Produto produto, int quantidadeEscolhida)
+    {
+        Pedido novoPedido = new Pedido(produto, quantidadeEscolhida);
+
+        Pedidos.Add(novoPedido);
+
+        return novoPedido;
+    }
+
+    public Pedido RemoverPedido(Pedido pedido)
+    {
+        Pedidos.Remove(pedido);
+
+        return pedido;
+    }
+
+    public Pedido RemoverPedido(Guid idPedido)
+    {
+        var pedido = Pedidos.Find(p => idPedido == p.Id);
+
+        if (pedido == null) return null;
+
+        Pedidos.Remove(pedido);
+
+        return pedido;
+    }
+
+    public decimal CalcularValorTotal()
+    {
+        decimal valorTotal = 0;
+
+        foreach (var p in Pedidos)
+            valorTotal += p.CalcularTotalParcial();
+
+        return valorTotal;
     }
 
     public override void AtualizarRegistro(Conta registroAtualizado)

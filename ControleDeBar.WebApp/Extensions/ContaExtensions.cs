@@ -36,7 +36,8 @@ public static class ContaExtensions
                 conta.Titular,
                 conta.Mesa.Numero,
                 conta.Garcom.Nome,
-                conta.EstaAberta
+                conta.EstaAberta,
+                conta.Pedidos
         );
     }
 }

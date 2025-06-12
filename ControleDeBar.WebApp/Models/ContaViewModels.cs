@@ -1,6 +1,7 @@
 ﻿using ControleDeBar.Dominio.ModuloConta;
 using ControleDeBar.Dominio.ModuloGarcom;
 using ControleDeBar.Dominio.ModuloMesa;
+using ControleDeBar.Dominio.ModuloProduto;
 using ControleDeBar.WebApp.Extensions;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.ComponentModel.DataAnnotations;
@@ -52,13 +53,15 @@ public class FecharContaViewModel
     public string Titular { get; set; }
     public int Mesa { get; set; }
     public string Garcom { get; set; }
+    public decimal ValorTotal { get; set; }
 
-    public FecharContaViewModel(Guid id, string titular, int mesa, string garcom)
+    public FecharContaViewModel(Guid id, string titular, int mesa, string garcom, decimal valorTotal)
     {
         Id = id;
         Titular = titular;
         Mesa = mesa;
         Garcom = garcom;
+        ValorTotal = valorTotal;
     }
 }
 
@@ -83,13 +86,72 @@ public class DetalhesContaViewModel
     public int Mesa { get; set; }
     public string Garcom { get; set; }
     public bool EstaAberta { get; set; }
+    public List<PedidoContaViewModel> Pedidos { get; set; }
 
-    public DetalhesContaViewModel(Guid id, string titular, int mesa, string garcom, bool estaAberta)
+    public DetalhesContaViewModel(Guid id, string titular, int mesa, string garcom, bool estaAberta, List<Pedido> pedidos)
     {
         Id = id;
         Titular = titular;
         Mesa = mesa;
         Garcom = garcom;
         EstaAberta = estaAberta;
+
+        Pedidos = new List<PedidoContaViewModel>();
+
+        foreach (var item in pedidos)
+        {
+            var pedidoVM = new PedidoContaViewModel(
+                item.Id,
+                item.Produto.Nome,
+                item.QuantidadeSolicitada,
+                item.CalcularTotalParcial()
+            );
+
+            Pedidos.Add(pedidoVM);
+        }
     }
+}
+
+public class PedidoContaViewModel
+{
+    public Guid Id { get; set; }
+    public string Produto { get; set; }
+    public int QuantidadeSolicitada { get; set; }
+    public decimal TotalParcial { get; set; }
+
+    public PedidoContaViewModel(Guid id, string produto, int quantidadeSolicitada, decimal totalParcial)
+    {
+        Id = id;
+        Produto = produto;
+        QuantidadeSolicitada = quantidadeSolicitada;
+        TotalParcial = totalParcial;
+    }
+}
+
+public class GerenciarPedidosViewModel
+{
+    public DetalhesContaViewModel Conta { get; set; }
+    public List<SelectListItem> Produtos { get; set; }
+
+    public GerenciarPedidosViewModel() { }
+
+    public GerenciarPedidosViewModel(Conta conta, List<Produto> produtos) : this()
+    {
+        Conta = conta.ParaDetalhesVM();
+
+        Produtos = new List<SelectListItem>();
+
+        foreach (var p in produtos)
+        {
+            var selectItem = new SelectListItem(p.Nome, p.Id.ToString());
+
+            Produtos.Add(selectItem);
+        }
+    }
+}
+
+public class AdicionarPedidoViewModel
+{
+    public Guid IdProduto { get; set; }
+    public int QuantidadeSolicitada { get; set; }
 }

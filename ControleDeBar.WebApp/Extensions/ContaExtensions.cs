@@ -37,6 +37,7 @@ public static class ContaExtensions
                 conta.Mesa.Numero,
                 conta.Garcom.Nome,
                 conta.EstaAberta,
+                conta.CalcularValorTotal(),
                 conta.Pedidos
         );
     }

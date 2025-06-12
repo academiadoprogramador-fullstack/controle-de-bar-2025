@@ -64,13 +64,20 @@ public class Conta : EntidadeBase<Conta>
 
     public Pedido RemoverPedido(Guid idPedido)
     {
-        var pedido = Pedidos.Find(p => idPedido == p.Id);
+        Pedido pedidoSelecionado = null;
 
-        if (pedido == null) return null;
+        foreach (var p in Pedidos)
+        {
+            if (p.Id == idPedido)
+                pedidoSelecionado = p;
+        }
 
-        Pedidos.Remove(pedido);
+        if (pedidoSelecionado == null)
+            return null;
 
-        return pedido;
+        Pedidos.Remove(pedidoSelecionado);
+
+        return pedidoSelecionado;
     }
 
     public decimal CalcularValorTotal()

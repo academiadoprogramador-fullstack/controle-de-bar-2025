@@ -65,7 +65,6 @@ public class FecharContaViewModel
     }
 }
 
-
 public class VisualizarContasViewModel
 {
     public List<DetalhesContaViewModel> Registros { get; set; }
@@ -86,16 +85,25 @@ public class DetalhesContaViewModel
     public int Mesa { get; set; }
     public string Garcom { get; set; }
     public bool EstaAberta { get; set; }
+    public decimal ValorTotal { get; set; }
     public List<PedidoContaViewModel> Pedidos { get; set; }
 
-    public DetalhesContaViewModel(Guid id, string titular, int mesa, string garcom, bool estaAberta, List<Pedido> pedidos)
+    public DetalhesContaViewModel(
+        Guid id,
+        string titular,
+        int mesa,
+        string garcom,
+        bool estaAberta,
+        decimal valorTotal,
+        List<Pedido> pedidos
+    )
     {
         Id = id;
         Titular = titular;
         Mesa = mesa;
         Garcom = garcom;
         EstaAberta = estaAberta;
-
+        ValorTotal = valorTotal;
         Pedidos = new List<PedidoContaViewModel>();
 
         foreach (var item in pedidos)

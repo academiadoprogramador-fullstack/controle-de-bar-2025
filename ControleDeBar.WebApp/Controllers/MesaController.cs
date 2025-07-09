@@ -42,14 +42,8 @@ public class MesaController : Controller
     {
         var registros = repositorioMesa.SelecionarRegistros();
 
-        foreach (var item in registros)
-        {
-            if (item.Numero.Equals(cadastrarVM.Numero))
-            {
-                ModelState.AddModelError("CadastroUnico", "Já existe uma mesa registrada com este número.");
-                break;
-            }
-        }
+        if (registros.Any(x => x.Numero.Equals(cadastrarVM.Numero)))
+            ModelState.AddModelError("CadastroUnico", "Já existe uma mesa registrada com este número.");
 
         if (!ModelState.IsValid)
             return View(cadastrarVM);
@@ -81,6 +75,9 @@ public class MesaController : Controller
     {
         var registroSelecionado = repositorioMesa.SelecionarRegistroPorId(id);
 
+        if (registroSelecionado is null)
+            return RedirectToAction(nameof(Index));
+
         var editarVM = new EditarMesaViewModel(
             id,
             registroSelecionado.Numero,
@@ -96,14 +93,8 @@ public class MesaController : Controller
     {
         var registros = repositorioMesa.SelecionarRegistros();
 
-        foreach (var item in registros)
-        {
-            if (!item.Id.Equals(id) && item.Numero.Equals(editarVM.Numero))
-            {
-                ModelState.AddModelError("CadastroUnico", "Já existe uma mesa registrada com este número.");
-                break;
-            }
-        }
+        if (registros.Any(x => !x.Id.Equals(id) && x.Numero.Equals(editarVM.Numero)))
+            ModelState.AddModelError("CadastroUnico", "Já existe uma mesa registrada com este número.");
 
         if (!ModelState.IsValid)
             return View(editarVM);
@@ -135,6 +126,9 @@ public class MesaController : Controller
     {
         var registroSelecionado = repositorioMesa.SelecionarRegistroPorId(id);
 
+        if (registroSelecionado is null)
+            return RedirectToAction(nameof(Index));
+
         var excluirVM = new ExcluirMesaViewModel(registroSelecionado.Id, registroSelecionado.Numero);
 
         return View(excluirVM);
@@ -155,7 +149,6 @@ public class MesaController : Controller
         }
         catch (Exception)
         {
-
             transacao.Rollback();
 
             throw;
@@ -168,6 +161,9 @@ public class MesaController : Controller
     public ActionResult Detalhes(Guid id)
     {
         var registroSelecionado = repositorioMesa.SelecionarRegistroPorId(id);
+
+        if (registroSelecionado is null)
+            return RedirectToAction(nameof(Index));
 
         var detalhesVM = new DetalhesMesaViewModel(
             id,

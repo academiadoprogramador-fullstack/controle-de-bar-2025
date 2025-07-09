@@ -23,6 +23,7 @@ public class Program
         builder.Services.AddScoped<IRepositorioProduto, RepositorioProdutoEmArquivo>();
         builder.Services.AddScoped<IRepositorioConta, RepositorioContaEmArquivo>();
 
+        builder.Services.AddEntityFrameworkConfig(builder.Configuration);
         builder.Services.AddSerilogConfig(builder.Logging);
 
         builder.Services.AddControllersWithViews();

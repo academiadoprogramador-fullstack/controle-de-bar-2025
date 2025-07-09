@@ -7,6 +7,7 @@ using ControleDeBar.Infraestrura.Arquivos.ModuloMesa;
 using ControleDeBar.Infraestrutura.Arquivos.ModuloConta;
 using ControleDeBar.Infraestrutura.Arquivos.ModuloGarcom;
 using ControleDeBar.Infraestrutura.Arquivos.ModuloProduto;
+using ControleDeBar.WebApp.DependencyInjection;
 
 namespace ControleDeBar.WebApp;
 
@@ -21,6 +22,8 @@ public class Program
         builder.Services.AddScoped<IRepositorioGarcom, RepositorioGarcomEmArquivo>();
         builder.Services.AddScoped<IRepositorioProduto, RepositorioProdutoEmArquivo>();
         builder.Services.AddScoped<IRepositorioConta, RepositorioContaEmArquivo>();
+
+        builder.Services.AddSerilogConfig(builder.Logging);
 
         builder.Services.AddControllersWithViews();
 

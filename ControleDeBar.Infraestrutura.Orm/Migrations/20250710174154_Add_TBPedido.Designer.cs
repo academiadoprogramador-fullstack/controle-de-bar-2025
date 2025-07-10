@@ -4,6 +4,7 @@ using ControleDeBar.Infraestrutura.Orm.Compartilhado;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ControleDeBar.Infraestrutura.Orm.Migrations
 {
     [DbContext(typeof(ControleDeBarDbContext))]
-    partial class ControleDeBarDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250710174154_Add_TBPedido")]
+    partial class Add_TBPedido
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -22,46 +25,9 @@ namespace ControleDeBar.Infraestrutura.Orm.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("ControleDeBar.Dominio.ModuloConta.Conta", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("Abertura")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("EstaAberta")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("Fechamento")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("GarcomId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("MesaId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Titular")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("GarcomId");
-
-                    b.HasIndex("MesaId");
-
-                    b.ToTable("Contas");
-                });
-
             modelBuilder.Entity("ControleDeBar.Dominio.ModuloConta.Pedido", b =>
                 {
                     b.Property<Guid>("Id")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("ContaId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("ProdutoId")
@@ -71,8 +37,6 @@ namespace ControleDeBar.Infraestrutura.Orm.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ContaId");
 
                     b.HasIndex("ProdutoId");
 
@@ -135,47 +99,15 @@ namespace ControleDeBar.Infraestrutura.Orm.Migrations
                     b.ToTable("Produtos");
                 });
 
-            modelBuilder.Entity("ControleDeBar.Dominio.ModuloConta.Conta", b =>
-                {
-                    b.HasOne("ControleDeBar.Dominio.ModuloGarcom.Garcom", "Garcom")
-                        .WithMany()
-                        .HasForeignKey("GarcomId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ControleDeBar.Dominio.ModuloMesa.Mesa", "Mesa")
-                        .WithMany()
-                        .HasForeignKey("MesaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Garcom");
-
-                    b.Navigation("Mesa");
-                });
-
             modelBuilder.Entity("ControleDeBar.Dominio.ModuloConta.Pedido", b =>
                 {
-                    b.HasOne("ControleDeBar.Dominio.ModuloConta.Conta", "Conta")
-                        .WithMany("Pedidos")
-                        .HasForeignKey("ContaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("ControleDeBar.Dominio.ModuloProduto.Produto", "Produto")
                         .WithMany("Pedidos")
                         .HasForeignKey("ProdutoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Conta");
-
                     b.Navigation("Produto");
-                });
-
-            modelBuilder.Entity("ControleDeBar.Dominio.ModuloConta.Conta", b =>
-                {
-                    b.Navigation("Pedidos");
                 });
 
             modelBuilder.Entity("ControleDeBar.Dominio.ModuloProduto.Produto", b =>

@@ -3,6 +3,7 @@ using ControleDeBar.Dominio.ModuloGarcom;
 using ControleDeBar.Dominio.ModuloMesa;
 using ControleDeBar.Dominio.ModuloProduto;
 using ControleDeBar.Infraestrura.Arquivos.Compartilhado;
+using ControleDeBar.Infraestrutura.Orm.Compartilhado;
 using ControleDeBar.WebApp.Extensions;
 using ControleDeBar.WebApp.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -12,21 +13,21 @@ namespace ControleDeBar.WebApp.Controllers;
 [Route("contas")]
 public class ContaController : Controller
 {
-    private readonly ContextoDados contextoDados;
+    private readonly ControleDeBarDbContext contexto;
     private readonly IRepositorioConta repositorioConta;
     private readonly IRepositorioMesa repositorioMesa;
     private readonly IRepositorioGarcom repositorioGarcom;
     private readonly IRepositorioProduto repositorioProduto;
 
     public ContaController(
-        ContextoDados contextoDados,
+        ControleDeBarDbContext contexto,
         IRepositorioConta repositorioConta,
         IRepositorioMesa repositorioMesa,
         IRepositorioGarcom repositorioGarcom,
         IRepositorioProduto repositorioProduto
     )
     {
-        this.contextoDados = contextoDados;
+        this.contexto = contexto;
         this.repositorioConta = repositorioConta;
         this.repositorioMesa = repositorioMesa;
         this.repositorioGarcom = repositorioGarcom;
@@ -86,6 +87,8 @@ public class ContaController : Controller
 
         repositorioConta.CadastrarConta(entidade);
 
+        contexto.SaveChanges();
+
         return RedirectToAction(nameof(Index));
     }
 
@@ -112,7 +115,7 @@ public class ContaController : Controller
 
         registroSelecionado.Fechar();
 
-        contextoDados.Salvar();
+        contexto.SaveChanges();
 
         return RedirectToAction(nameof(Index));
     }
@@ -134,12 +137,14 @@ public class ContaController : Controller
         var contaSelecionada = repositorioConta.SelecionarPorId(id);
         var produtoSelecionado = repositorioProduto.SelecionarRegistroPorId(adicionarPedidoVm.IdProduto);
 
-        contaSelecionada.RegistrarPedido(
+        var pedido = contaSelecionada.RegistrarPedido(
             produtoSelecionado,
             adicionarPedidoVm.QuantidadeSolicitada
         );
 
-        contextoDados.Salvar();
+        contexto.Pedidos.Add(pedido);
+
+        contexto.SaveChanges();
 
         var produtos = repositorioProduto.SelecionarRegistros();
 
@@ -155,7 +160,7 @@ public class ContaController : Controller
 
         var pedidoRemovido = contaSelecionada.RemoverPedido(idPedido);
 
-        contextoDados.Salvar();
+        contexto.SaveChanges();
 
         var produtos = repositorioProduto.SelecionarRegistros();
 

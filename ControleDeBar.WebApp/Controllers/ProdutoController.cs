@@ -1,4 +1,5 @@
 ﻿using ControleDeBar.Dominio.ModuloProduto;
+using ControleDeBar.Infraestrutura.Orm.Compartilhado;
 using ControleDeBar.WebApp.Extensions;
 using ControleDeBar.WebApp.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -8,10 +9,12 @@ namespace ControleDeBar.WebApp.Controllers;
 [Route("produtos")]
 public class ProdutoController : Controller
 {
+    private readonly ControleDeBarDbContext contexto;
     private readonly IRepositorioProduto repositorioProduto;
 
-    public ProdutoController(IRepositorioProduto repositorioProduto)
+    public ProdutoController(ControleDeBarDbContext contexto, IRepositorioProduto repositorioProduto)
     {
+        this.contexto = contexto;
         this.repositorioProduto = repositorioProduto;
     }
 
@@ -55,6 +58,8 @@ public class ProdutoController : Controller
 
         repositorioProduto.CadastrarRegistro(entidade);
 
+        contexto.SaveChanges();
+
         return RedirectToAction(nameof(Index));
     }
 
@@ -94,6 +99,8 @@ public class ProdutoController : Controller
 
         repositorioProduto.EditarRegistro(id, entidadeEditada);
 
+        contexto.SaveChanges();
+
         return RedirectToAction(nameof(Index));
     }
 
@@ -111,6 +118,8 @@ public class ProdutoController : Controller
     public IActionResult ExcluirConfirmado(Guid id)
     {
         repositorioProduto.ExcluirRegistro(id);
+
+        contexto.SaveChanges();
 
         return RedirectToAction(nameof(Index));
     }

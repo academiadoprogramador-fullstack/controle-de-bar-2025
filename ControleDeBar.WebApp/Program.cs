@@ -3,10 +3,10 @@ using ControleDeBar.Dominio.ModuloGarcom;
 using ControleDeBar.Dominio.ModuloMesa;
 using ControleDeBar.Dominio.ModuloProduto;
 using ControleDeBar.Infraestrura.Arquivos.Compartilhado;
-using ControleDeBar.Infraestrutura.Arquivos.ModuloConta;
-using ControleDeBar.Infraestrutura.Arquivos.ModuloGarcom;
-using ControleDeBar.Infraestrutura.Arquivos.ModuloProduto;
+using ControleDeBar.Infraestrutura.Orm.ModuloConta;
+using ControleDeBar.Infraestrutura.Orm.ModuloGarcom;
 using ControleDeBar.Infraestrutura.Orm.ModuloMesa;
+using ControleDeBar.Infraestrutura.Orm.ModuloProduto;
 using ControleDeBar.WebApp.DependencyInjection;
 
 namespace ControleDeBar.WebApp;
@@ -19,9 +19,9 @@ public class Program
 
         builder.Services.AddScoped(_ => new ContextoDados(true));
         builder.Services.AddScoped<IRepositorioMesa, RepositorioMesaEmOrm>();
-        builder.Services.AddScoped<IRepositorioGarcom, RepositorioGarcomEmArquivo>();
-        builder.Services.AddScoped<IRepositorioProduto, RepositorioProdutoEmArquivo>();
-        builder.Services.AddScoped<IRepositorioConta, RepositorioContaEmArquivo>();
+        builder.Services.AddScoped<IRepositorioGarcom, RepositorioGarcomEmOrm>();
+        builder.Services.AddScoped<IRepositorioProduto, RepositorioProdutoEmOrm>();
+        builder.Services.AddScoped<IRepositorioConta, RepositorioContaEmOrm>();
 
         builder.Services.AddEntityFrameworkConfig(builder.Configuration);
         builder.Services.AddSerilogConfig(builder.Logging);

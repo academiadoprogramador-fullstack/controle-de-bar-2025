@@ -1,4 +1,5 @@
 ﻿using ControleDeBar.Dominio.ModuloGarcom;
+using ControleDeBar.Infraestrutura.Orm.Compartilhado;
 using ControleDeBar.WebApp.Extensions;
 using ControleDeBar.WebApp.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -8,10 +9,12 @@ namespace ControleDeBar.WebApp.Controllers;
 [Route("garcons")]
 public class GarcomController : Controller
 {
+    private readonly ControleDeBarDbContext contexto;
     private readonly IRepositorioGarcom repositorioGarcom;
 
-    public GarcomController(IRepositorioGarcom repositorioGarcom)
+    public GarcomController(ControleDeBarDbContext contexto, IRepositorioGarcom repositorioGarcom)
     {
+        this.contexto = contexto;
         this.repositorioGarcom = repositorioGarcom;
     }
 
@@ -58,7 +61,22 @@ public class GarcomController : Controller
 
         var entidade = cadastrarVM.ParaEntidade();
 
-        repositorioGarcom.CadastrarRegistro(entidade);
+        var transacao = contexto.Database.BeginTransaction();
+
+        try
+        {
+            repositorioGarcom.CadastrarRegistro(entidade);
+
+            contexto.SaveChanges();
+
+            transacao.Commit();
+        }
+        catch
+        {
+            transacao.Rollback();
+
+            throw;
+        }
 
         return RedirectToAction(nameof(Index));
     }
@@ -103,7 +121,22 @@ public class GarcomController : Controller
 
         var entidadeEditada = editarVM.ParaEntidade();
 
-        repositorioGarcom.EditarRegistro(id, entidadeEditada);
+        var transacao = contexto.Database.BeginTransaction();
+
+        try
+        {
+            repositorioGarcom.EditarRegistro(id, entidadeEditada);
+
+            contexto.SaveChanges();
+
+            transacao.Commit();
+        }
+        catch 
+        {
+            transacao.Rollback();
+
+            throw;
+        }
 
         return RedirectToAction(nameof(Index));
     }
@@ -121,7 +154,22 @@ public class GarcomController : Controller
     [HttpPost("excluir/{id:guid}")]
     public IActionResult ExcluirConfirmado(Guid id)
     {
-        repositorioGarcom.ExcluirRegistro(id);
+        var transacao = contexto.Database.BeginTransaction();
+
+        try
+        {
+            repositorioGarcom.ExcluirRegistro(id);
+
+            contexto.SaveChanges();
+
+            transacao.Commit();
+        }
+        catch
+        {
+            transacao.Rollback();
+
+            throw;
+        }
 
         return RedirectToAction(nameof(Index));
     }

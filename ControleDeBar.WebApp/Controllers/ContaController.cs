@@ -2,7 +2,7 @@
 using ControleDeBar.Dominio.ModuloGarcom;
 using ControleDeBar.Dominio.ModuloMesa;
 using ControleDeBar.Dominio.ModuloProduto;
-using ControleDeBar.Infraestrura.Arquivos.Compartilhado;
+using ControleDeBar.Infraestrutura.Orm.Compartilhado;
 using ControleDeBar.WebApp.Extensions;
 using ControleDeBar.WebApp.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -12,21 +12,21 @@ namespace ControleDeBar.WebApp.Controllers;
 [Route("contas")]
 public class ContaController : Controller
 {
-    private readonly ContextoDados contextoDados;
+    private readonly ControleDeBarDbContext contexto;
     private readonly IRepositorioConta repositorioConta;
     private readonly IRepositorioMesa repositorioMesa;
     private readonly IRepositorioGarcom repositorioGarcom;
     private readonly IRepositorioProduto repositorioProduto;
 
     public ContaController(
-        ContextoDados contextoDados,
+        ControleDeBarDbContext contexto,
         IRepositorioConta repositorioConta,
         IRepositorioMesa repositorioMesa,
         IRepositorioGarcom repositorioGarcom,
         IRepositorioProduto repositorioProduto
     )
     {
-        this.contextoDados = contextoDados;
+        this.contexto = contexto;
         this.repositorioConta = repositorioConta;
         this.repositorioMesa = repositorioMesa;
         this.repositorioGarcom = repositorioGarcom;
@@ -84,7 +84,22 @@ public class ContaController : Controller
 
         var entidade = abrirVM.ParaEntidade(mesas, garcons);
 
-        repositorioConta.CadastrarConta(entidade);
+        var transacao = contexto.Database.BeginTransaction();
+
+        try
+        {
+            repositorioConta.CadastrarConta(entidade);
+
+            contexto.SaveChanges();
+
+            transacao.Commit();
+        }
+        catch
+        {
+            transacao.Rollback();
+
+            throw;
+        }
 
         return RedirectToAction(nameof(Index));
     }
@@ -110,9 +125,12 @@ public class ContaController : Controller
     {
         var registroSelecionado = repositorioConta.SelecionarPorId(id);
 
+        if (registroSelecionado is null)
+            return RedirectToAction(nameof(Index));
+
         registroSelecionado.Fechar();
 
-        contextoDados.Salvar();
+        contexto.SaveChanges();
 
         return RedirectToAction(nameof(Index));
     }
@@ -121,6 +139,10 @@ public class ContaController : Controller
     public IActionResult GerenciarPedidos(Guid id)
     {
         var contaSelecionada = repositorioConta.SelecionarPorId(id);
+
+        if (contaSelecionada is null)
+            return RedirectToAction(nameof(Index));
+
         var produtos = repositorioProduto.SelecionarRegistros();
 
         var gerenciarPedidosVm = new GerenciarPedidosViewModel(contaSelecionada, produtos);
@@ -132,14 +154,20 @@ public class ContaController : Controller
     public IActionResult AdicionarPedido(Guid id, AdicionarPedidoViewModel adicionarPedidoVm)
     {
         var contaSelecionada = repositorioConta.SelecionarPorId(id);
+
         var produtoSelecionado = repositorioProduto.SelecionarRegistroPorId(adicionarPedidoVm.IdProduto);
 
-        contaSelecionada.RegistrarPedido(
+        if (contaSelecionada is null || produtoSelecionado is null)
+            return RedirectToAction(nameof(Index));
+
+        var pedido = contaSelecionada.RegistrarPedido(
             produtoSelecionado,
             adicionarPedidoVm.QuantidadeSolicitada
         );
 
-        contextoDados.Salvar();
+        contexto.Pedidos.Add(pedido);
+
+        contexto.SaveChanges();
 
         var produtos = repositorioProduto.SelecionarRegistros();
 
@@ -153,9 +181,12 @@ public class ContaController : Controller
     {
         var contaSelecionada = repositorioConta.SelecionarPorId(id);
 
+        if (contaSelecionada is null)
+            return RedirectToAction(nameof(Index));
+
         var pedidoRemovido = contaSelecionada.RemoverPedido(idPedido);
 
-        contextoDados.Salvar();
+        contexto.SaveChanges();
 
         var produtos = repositorioProduto.SelecionarRegistros();
 

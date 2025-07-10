@@ -1,4 +1,5 @@
 ﻿using ControleDeBar.Dominio.ModuloGarcom;
+using ControleDeBar.Infraestrutura.Orm.Compartilhado;
 using ControleDeBar.WebApp.Extensions;
 using ControleDeBar.WebApp.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -8,10 +9,12 @@ namespace ControleDeBar.WebApp.Controllers;
 [Route("garcons")]
 public class GarcomController : Controller
 {
+    private readonly ControleDeBarDbContext contexto;
     private readonly IRepositorioGarcom repositorioGarcom;
 
-    public GarcomController(IRepositorioGarcom repositorioGarcom)
+    public GarcomController(ControleDeBarDbContext contexto, IRepositorioGarcom repositorioGarcom)
     {
+        this.contexto = contexto;
         this.repositorioGarcom = repositorioGarcom;
     }
 
@@ -60,6 +63,8 @@ public class GarcomController : Controller
 
         repositorioGarcom.CadastrarRegistro(entidade);
 
+        contexto.SaveChanges();
+
         return RedirectToAction(nameof(Index));
     }
 
@@ -105,6 +110,8 @@ public class GarcomController : Controller
 
         repositorioGarcom.EditarRegistro(id, entidadeEditada);
 
+        contexto.SaveChanges();
+
         return RedirectToAction(nameof(Index));
     }
 
@@ -122,6 +129,8 @@ public class GarcomController : Controller
     public IActionResult ExcluirConfirmado(Guid id)
     {
         repositorioGarcom.ExcluirRegistro(id);
+
+        contexto.SaveChanges();
 
         return RedirectToAction(nameof(Index));
     }

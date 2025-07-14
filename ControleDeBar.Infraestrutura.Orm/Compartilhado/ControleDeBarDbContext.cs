@@ -2,8 +2,6 @@
 using ControleDeBar.Dominio.ModuloGarcom;
 using ControleDeBar.Dominio.ModuloMesa;
 using ControleDeBar.Dominio.ModuloProduto;
-using ControleDeBar.Infraestrutura.Orm.ModuloGarcom;
-using ControleDeBar.Infraestrutura.Orm.ModuloMesa;
 using Microsoft.EntityFrameworkCore;
 
 namespace ControleDeBar.Infraestrutura.Orm.Compartilhado;

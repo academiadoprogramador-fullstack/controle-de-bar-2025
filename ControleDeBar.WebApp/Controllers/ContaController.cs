@@ -2,7 +2,6 @@
 using ControleDeBar.Dominio.ModuloGarcom;
 using ControleDeBar.Dominio.ModuloMesa;
 using ControleDeBar.Dominio.ModuloProduto;
-using ControleDeBar.Infraestrura.Arquivos.Compartilhado;
 using ControleDeBar.Infraestrutura.Orm.Compartilhado;
 using ControleDeBar.WebApp.Extensions;
 using ControleDeBar.WebApp.Models;

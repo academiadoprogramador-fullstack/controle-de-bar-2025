@@ -13,6 +13,6 @@ public static class EntityFrameworkConfig
         var connectionString = configuration["SQL_CONNECTION_STRING"];
 
         services.AddDbContext<ControleDeBarDbContext>(options =>
-            options.UseSqlServer(connectionString));
+            options.UseNpgsql(connectionString));
     }
 }

@@ -3,11 +3,14 @@ using ControleDeBar.Dominio.ModuloGarcom;
 using ControleDeBar.Dominio.ModuloMesa;
 using ControleDeBar.Dominio.ModuloProduto;
 using ControleDeBar.Infraestrura.Arquivos.Compartilhado;
+using ControleDeBar.Infraestrutura.Orm.Compartilhado;
 using ControleDeBar.Infraestrutura.Orm.ModuloConta;
 using ControleDeBar.Infraestrutura.Orm.ModuloGarcom;
 using ControleDeBar.Infraestrutura.Orm.ModuloMesa;
 using ControleDeBar.Infraestrutura.Orm.ModuloProduto;
 using ControleDeBar.WebApp.DependencyInjection;
+using ControleDeBar.WebApp.Orm;
+using Microsoft.EntityFrameworkCore;
 
 namespace ControleDeBar.WebApp;
 
@@ -29,6 +32,8 @@ public class Program
         builder.Services.AddControllersWithViews();
 
         var app = builder.Build();
+
+        app.ApplyMigrations();
 
         app.UseAntiforgery();
         app.UseStaticFiles();

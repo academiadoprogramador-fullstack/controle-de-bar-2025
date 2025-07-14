@@ -33,7 +33,7 @@ public class Conta : EntidadeBase<Conta>
     public void Abrir()
     {
         EstaAberta = true;
-        Abertura = DateTime.Now;
+        Abertura = DateTime.UtcNow;
 
         Mesa.Ocupar();
     }
@@ -41,7 +41,7 @@ public class Conta : EntidadeBase<Conta>
     public void Fechar()
     {
         EstaAberta = false;
-        Fechamento = DateTime.Now;
+        Fechamento = DateTime.UtcNow;
 
         Mesa.Desocupar();
     }
